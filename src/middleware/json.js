@@ -18,12 +18,3 @@ export async function json(req, res) {
   res.setHeader('Content-Type', 'application/json');
 }
 
-export function verifyTaskExist(req, res) {
-  const { title } = req.body
-
-  if(Object.keys(database) > 0) { 
-    const checkTask = database.filter((data) => data.title == title)
-    if (!checkTask[0]) throw new Error({ message: "A task with this title has already been created!" })
-  }
-
-}
