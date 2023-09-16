@@ -5,7 +5,7 @@ const database = new Database();
 
 export function verifyTaskExist(req, res) {
   const { title } = req.body;
-  try {
+ 
     const tasks = database.select('tasks');
 
     const checkTask = tasks.filter((data) => data.title === title);
@@ -17,8 +17,6 @@ export function verifyTaskExist(req, res) {
         409
       );
     }
-  } catch (error) {
-    console.log(error.message)
-    return res.writeHead(error.statusCode).end(error.message);
-  }
+
+  
 }

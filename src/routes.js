@@ -2,6 +2,7 @@ import { Database } from './database.js';
 import { randomUUID } from 'node:crypto';
 import { buildRoutePath } from './utils/build-route-path.js';
 import { verifyTaskExist } from './middleware/verifyTitle.js';
+import { AppError } from './errors.js';
 
 const database = new Database();
 
@@ -11,8 +12,12 @@ export const routes = [
     path: buildRoutePath('/tasks'),
     handler: (req, res) => {
       const { title, description } = req.body;
-      
-      verifyTaskExist(req, res);
+
+      try {
+        verifyTaskExist(req, res);
+      } catch (error) {
+        return res.writeHead(409).end(JSON.stringify(error.message));
+      }
 
       const task = {
         id: randomUUID(),
@@ -23,7 +28,7 @@ export const routes = [
         updated_at: null,
       };
 
-      // database.insert('tasks', task);
+      database.insert('tasks', task);
 
       return res.writeHead(201).end(JSON.stringify(task));
     },
@@ -52,9 +57,21 @@ export const routes = [
       const { id } = req.params;
       const { title, description } = req.body;
 
+      const task = database.select(
+        'tasks',
+        id
+          ? {
+              id,
+            }
+          : null
+      );
+
       database.update('tasks', id, {
         title,
         description,
+        created_at: task[0].created_at,
+        updated_at: new Date(),
+        completed_at: task[0].completed_at,
       });
 
       return res.writeHead(204).end();
