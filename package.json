@@ -2,7 +2,7 @@
   "name": "desafio1",
   "type": "module",
   "version": "1.0.0",
-  "description": "CRUD de tarefas",
+  "description": "CRUD de tarefas e streaming das tarefas",
   "main": "index.js",
   "scripts": {
     "dev": "node --watch src/server.js",
@@ -10,5 +10,8 @@
   },
   "keywords": [],
   "author": "Iury Chiganer",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "csv-parse": "^5.5.0"
+  }
 }
