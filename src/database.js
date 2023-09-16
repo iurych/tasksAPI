@@ -45,11 +45,20 @@ export class Database {
     return data;
   }
 
-  delete(table, id) {
-    const taskId = this.#database[table].findIndex((row) => row.id === id);
+  update(table, id, data) {
+    const rowIndex = this.#database[table].findIndex((row) => row.id === id);
 
-    if (taskId > -1) {
-      this.#database[table].splice(taskId, 1);
+    if (rowIndex > -1) {
+      this.#database[table][rowIndex] = {id, ...data }
+      this.#persist();
+    }
+  }
+
+  delete(table, id) {
+    const taskIndex = this.#database[table].findIndex((row) => row.id === id);
+
+    if (taskIndex > -1) {
+      this.#database[table].splice(taskIndex, 1);
       this.#persist();
     }
   }

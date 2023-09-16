@@ -11,8 +11,8 @@ export const routes = [
     path: buildRoutePath('/tasks'),
     handler: (req, res) => {
       const { title, description } = req.body;
-      //verificar porque está quebrando a API
-      verifyTaskExist(req, res)
+      
+      verifyTaskExist(req, res);
 
       const task = {
         id: randomUUID(),
@@ -23,7 +23,7 @@ export const routes = [
         updated_at: null,
       };
 
-      database.insert('tasks', task);
+      // database.insert('tasks', task);
 
       return res.writeHead(201).end(JSON.stringify(task));
     },
@@ -37,7 +37,7 @@ export const routes = [
         'tasks',
         search
           ? {
-              title: search
+              title: search,
             }
           : null
       );
@@ -46,15 +46,29 @@ export const routes = [
     },
   },
   {
-    method:'DELETE',
-    path:  buildRoutePath('/tasks/:id'),
+    method: 'PUT',
+    path: buildRoutePath('/tasks/:id'),
     handler: (req, res) => {
       const { id } = req.params;
-      
-      database.delete('tasks', id)
-      
-      return res.writeHead(204).end();
-    }
+      const { title, description } = req.body;
 
-  }
+      database.update('tasks', id, {
+        title,
+        description,
+      });
+
+      return res.writeHead(204).end();
+    },
+  },
+  {
+    method: 'DELETE',
+    path: buildRoutePath('/tasks/:id'),
+    handler: (req, res) => {
+      const { id } = req.params;
+
+      database.delete('tasks', id);
+
+      return res.writeHead(204).end();
+    },
+  },
 ];
