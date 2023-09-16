@@ -2,7 +2,8 @@ import { Database } from './database.js';
 import { randomUUID } from 'node:crypto';
 import { buildRoutePath } from './utils/build-route-path.js';
 import { verifyTaskExist } from './middleware/verifyTitle.js';
-import { AppError } from './errors.js';
+import { verifyIdExist } from './middleware/verifyTaskById.js';
+import { bodyIsValid } from './middleware/validateBody.js';
 
 const database = new Database();
 
@@ -14,9 +15,19 @@ export const routes = [
       const { title, description } = req.body;
 
       try {
+        bodyIsValid(req, res);
+      } catch (error) {
+        return res
+          .writeHead(error.statusCode)
+          .end(JSON.stringify(error.message));
+      }
+
+      try {
         verifyTaskExist(req, res);
       } catch (error) {
-        return res.writeHead(409).end(JSON.stringify(error.message));
+        return res
+          .writeHead(error.statusCode)
+          .end(JSON.stringify(error.message));
       }
 
       const task = {
@@ -54,8 +65,24 @@ export const routes = [
     method: 'PUT',
     path: buildRoutePath('/tasks/:id'),
     handler: (req, res) => {
+      try {
+        bodyIsValid(req, res);
+      } catch (error) {
+        return res
+          .writeHead(error.statusCode)
+          .end(JSON.stringify(error.message));
+      }
+
       const { id } = req.params;
       const { title, description } = req.body;
+
+      try {
+        verifyIdExist(req, res);
+      } catch (error) {
+        return res
+          .writeHead(error.statusCode)
+          .end(JSON.stringify(error.message));
+      }
 
       const task = database.select(
         'tasks',
@@ -83,6 +110,14 @@ export const routes = [
     handler: (req, res) => {
       const { id } = req.params;
 
+      try {
+        verifyIdExist(req, res);
+      } catch (error) {
+        return res
+          .writeHead(error.statusCode)
+          .end(JSON.stringify(error.message));
+      }
+
       const task = database.select(
         'tasks',
         id
@@ -95,7 +130,7 @@ export const routes = [
       const taskCompleted = {
         ...task[0],
         completed_at: new Date(),
-      }
+      };
 
       database.update('tasks', id, taskCompleted);
 
@@ -108,6 +143,14 @@ export const routes = [
     path: buildRoutePath('/tasks/:id'),
     handler: (req, res) => {
       const { id } = req.params;
+
+      try {
+        verifyIdExist(req, res);
+      } catch (error) {
+        return res
+          .writeHead(error.statusCode)
+          .end(JSON.stringify(error.message));
+      }
 
       database.delete('tasks', id);
 
