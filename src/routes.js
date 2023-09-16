@@ -11,7 +11,7 @@ export const routes = [
     path: buildRoutePath('/tasks'),
     handler: (req, res) => {
       const { title, description } = req.body;
-
+      //verificar porque está quebrando a API
       verifyTaskExist(req, res)
 
       const task = {
@@ -37,8 +37,7 @@ export const routes = [
         'tasks',
         search
           ? {
-              title: search,
-              description: search,
+              title: search
             }
           : null
       );
@@ -46,4 +45,16 @@ export const routes = [
       return res.end(JSON.stringify(tasks));
     },
   },
+  {
+    method:'DELETE',
+    path:  buildRoutePath('/tasks/:id'),
+    handler: (req, res) => {
+      const { id } = req.params;
+      
+      database.delete('tasks', id)
+      
+      return res.writeHead(204).end();
+    }
+
+  }
 ];
