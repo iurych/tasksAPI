@@ -27,7 +27,7 @@ export const routes = [
       } catch (error) {
         return res
           .writeHead(error.statusCode)
-          .end(JSON.stringify(error.message));
+          .end(JSON.stringify({ message: error.message }));
       }
 
       const task = {
@@ -70,7 +70,7 @@ export const routes = [
       } catch (error) {
         return res
           .writeHead(error.statusCode)
-          .end(JSON.stringify(error.message));
+          .end(JSON.stringify({ message: error.message }));
       }
 
       const { id } = req.params;
@@ -81,7 +81,7 @@ export const routes = [
       } catch (error) {
         return res
           .writeHead(error.statusCode)
-          .end(JSON.stringify(error.message));
+          .end(JSON.stringify({ message: error.message }));
       }
 
       const task = database.select(
@@ -115,7 +115,7 @@ export const routes = [
       } catch (error) {
         return res
           .writeHead(error.statusCode)
-          .end(JSON.stringify(error.message));
+          .end(JSON.stringify({ message: error.message }));
       }
 
       const task = database.select(
@@ -149,7 +149,7 @@ export const routes = [
       } catch (error) {
         return res
           .writeHead(error.statusCode)
-          .end(JSON.stringify(error.message));
+          .end(JSON.stringify({ message: error.message }));
       }
 
       database.delete('tasks', id);
